@@ -61,9 +61,12 @@ def get_data_for_question_single_site(question_num: int, qs, responses_df, theme
     theme_dict = {theme_row[i]: theme_row[i + 1]
                   for i in range(0, len(theme_row), 2)}
 
-    for k in list(theme_dict.keys()):
+    ks = list(theme_dict.keys())
+    for k in ks:
         # remove nan/whitespace from theme_dict
-        if type(k) != str or not k.strip():
+        if type(k) != str or not k.strip() or \
+                not str(theme_dict[k]).strip():  # if theme_dict value is whitespace, remove the key from the dict
+            # print('deleting', k, theme_dict[k])
             del theme_dict[k]
 
     return question, responses, theme_dict
