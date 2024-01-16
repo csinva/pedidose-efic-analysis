@@ -58,9 +58,10 @@ def get_data_for_question_single_site(question_num: int, qs, responses_df, theme
     question = qs.iloc[question_num]
     responses = responses_df.iloc[question_num]
     theme_row = themes_df.iloc[question_num].values
+
+    # theme dict
     theme_dict = {theme_row[i]: theme_row[i + 1]
                   for i in range(0, len(theme_row), 2)}
-
     ks = list(theme_dict.keys())
     for k in ks:
         # remove nan/whitespace from theme_dict
@@ -69,4 +70,5 @@ def get_data_for_question_single_site(question_num: int, qs, responses_df, theme
             # print('deleting', k, theme_dict[k])
             del theme_dict[k]
 
+    assert not 'NA' in theme_dict.keys(), 'should have implicitly removed themes named "NA"'
     return question, responses, theme_dict
