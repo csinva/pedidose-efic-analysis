@@ -90,7 +90,7 @@ def get_data_for_question_single_site(question_num: int, qs, responses_df, theme
         resp = responses[i]
         if pd.isna(resp):
             responses.values[i] = np.nan
-        # one of select strings
+        # one of selected strings
         elif resp.lower().strip(' .()') in [
             'not asked', 'see above', 'answer not recorded', 'did not ask', 'n/a', 'above',
             'answer not recorded, presumed interviewee shook head no?', 'did not answer',
