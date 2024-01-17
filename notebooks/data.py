@@ -19,6 +19,10 @@ PROCESSED_DIR = join(REPO_DIR, 'processed')
 RENAME_SITE_DICT = {
     'WashingtonDC': 'Washington DC',
 }
+RENAME_CHECKPOINTS_DICT = {
+    'gpt-4': 'GPT-4',
+    'gpt-35-turbo': 'GPT-3.5 Turbo',
+}
 
 
 def load_files_dict_single_site():
@@ -64,6 +68,18 @@ def load_files_dict_single_site():
     return files_dict
 
 
+def split_single_site_df(df):
+    theme_index = np.where(
+        np.array(list(map(str.lower, df.columns.values))) == 'theme')[0][0]
+    col_vals = df.columns[4: theme_index]
+
+    # separate into relevant pieces
+    qs = df['Subcategory']
+    responses_df = df[col_vals]
+    themes_df = df[df.columns[theme_index:]]
+    return qs, responses_df, themes_df
+
+
 def get_data_for_question_single_site(question_num: int, qs, responses_df, themes_df):
     question = qs.iloc[question_num].strip()
     responses = responses_df.iloc[question_num]
@@ -104,10 +120,15 @@ def get_data_for_question_single_site(question_num: int, qs, responses_df, theme
             # v is often an int
             if isinstance(v, str):
                 v = v.strip()
-
             # v is not empty
             if str(v).strip():
-                theme_dict[k] = v
+
+                # check if v can be cast to an int
+                try:
+                    v = int(v)
+                    theme_dict[k] = v
+                except:
+                    pass
 
     assert not 'NA' in theme_dict.keys(), 'should have implicitly removed themes named "NA"'
     return question, responses, theme_dict

@@ -203,7 +203,7 @@ Responses
 1. Pressure of having to decide
 2. Afterwards some parents might be angry if there was an adverse outcome
 3. Medical history unknown at the time
-4. Every individual is different (i.e. medical history)
+4. Every individual is different (i.e. medical history
 5. Time, it moves quickly and they need help
 6. People are flustered
 7. Important to do it
@@ -214,8 +214,7 @@ Responses
 Themes
 - Theme 1: Time-sensitive challenges [1, 5, 8, 9, 10]
 - Theme 2: Individual variability and unknown factors [3, 4, 6]
-- Theme 3: Potential negative outcomes [2, 8, 10]
-- Theme 4: Importance and necessity of action [7]
+- Theme 3: Emotional and ethical considerations [2, 7]
 
 ### Question: What concerns do you have about starting research-related treatments in an emergency situation if you could not provide consent for yourself or on behalf of your child?
 
@@ -297,7 +296,7 @@ Responses
 3. Very important, just needs more background about patients
 4. Very important, keep hospitalization rates down
 5. Very beneficial
-6. Agree, but have to make sure the community is well-represented (diverse)
+6. Agree, but have to make sure the community is well-represented (diverse
 7. Very important
 8. Important
 9. Important
