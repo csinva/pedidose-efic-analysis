@@ -8,6 +8,7 @@ from tqdm import tqdm
 from collections import defaultdict
 import matplotlib.pyplot as plt
 import seaborn as sns
+import traceback
 
 DATA_DIR_INITIAL = '../data/raw/'
 DATA_DIR = join(DATA_DIR_INITIAL, '2nd Pass Analysis')
@@ -19,7 +20,7 @@ def load_files_dict_single_site():
     files_fail = []
     annotators = [x for x in os.listdir(DATA_DIR) if not '.' in x]
     for annotator in annotators:
-        print(annotator)
+        # print(annotator)
         annotator_dir = join(DATA_DIR, annotator)
         interviews = [x for x in os.listdir(
             annotator_dir) if x.endswith('.xlsx') and not 'INCOMPLETE' in x]
@@ -34,20 +35,22 @@ def load_files_dict_single_site():
                 assert df.columns[i] == COLS[i]
             assert df.shape[0] == 46
             # print(df.shape)
-            # assert df.columns[0] == 'Item #'
-            # assert df.columns[1] == 'Slide #'
+            assert df.columns[0] == 'Item #'
+            assert df.columns[1] == 'Slide #'
             # display(df.head())
             # print(df.columns)
             try:
-                # , interview + ' ' + df.columns
-                assert 'theme' in pd.Series(df.columns).apply(str.lower)
+                assert 'theme' in pd.Series(df.columns).apply(str.lower).values
                 theme_index = np.where(
                     np.array(list(map(str.lower, df.columns.values))) == 'theme')[0][0]
                 for i in range(theme_index + 1, len(df.columns), 2):
-                    assert '#' in df.columns[i]
+                    assert '#' in df.columns[
+                        i], f'should be a theme number but is {df.columns[i]}'
                 assert df.shape[0] == 46
                 files_succ.append(key)
-            except:
+            # print error traceback
+            except Exception as e:
+                # print(traceback.format_exc())
                 files_fail.append(key)
     print('success:', len(files_succ))
     print('fail:', files_fail)
@@ -63,17 +66,19 @@ def get_data_for_question_single_site(question_num: int, qs, responses_df, theme
     for i in range(len(responses)):
         resp = responses[i]
         if pd.isna(resp):
-            responses[i] = np.nan
+            responses.values[i] = np.nan
         # one of select strings
         elif resp.lower().strip(' .()') in ['not asked', 'see above', 'answer not recorded', 'did not ask', 'n/a', 'above']:
-            responses[i] = np.nan
+            responses.values[i] = np.nan
         # check if resp is just whitespace or punctuation
         elif not resp.strip(' .,'):
-            responses[i] = np.nan
+            responses.values[i] = np.nan
 
         # valid string
         else:
-            responses[i] = resp.strip(' .(),')
+            responses.values[i] = resp.strip(' .(),')
+
+            # set value
 
     # theme dict
     theme_dict = {}
