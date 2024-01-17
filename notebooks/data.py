@@ -55,20 +55,43 @@ def load_files_dict_single_site():
 
 
 def get_data_for_question_single_site(question_num: int, qs, responses_df, themes_df):
-    question = qs.iloc[question_num]
+    question = qs.iloc[question_num].strip()
     responses = responses_df.iloc[question_num]
     theme_row = themes_df.iloc[question_num].values
 
+    # responses clean
+    for i in range(len(responses)):
+        resp = responses[i]
+        if pd.isna(resp):
+            responses[i] = np.nan
+        # one of select strings
+        elif resp.lower().strip(' .()') in ['not asked', 'see above', 'answer not recorded', 'did not ask', 'n/a', 'above']:
+            responses[i] = np.nan
+        # check if resp is just whitespace or punctuation
+        elif not resp.strip(' .,'):
+            responses[i] = np.nan
+
+        # valid string
+        else:
+            responses[i] = resp.strip(' .(),')
+
     # theme dict
-    theme_dict = {theme_row[i]: theme_row[i + 1]
-                  for i in range(0, len(theme_row), 2)}
-    ks = list(theme_dict.keys())
-    for k in ks:
+    theme_dict = {}
+    for i in range(0, len(theme_row), 2):
+        k = theme_row[i]
+        v = theme_row[i + 1]
+
         # remove nan/whitespace from theme_dict
-        if type(k) != str or not k.strip() or \
-                not str(theme_dict[k]).strip():  # if theme_dict value is whitespace, remove the key from the dict
-            # print('deleting', k, theme_dict[k])
-            del theme_dict[k]
+        if isinstance(k, str) and k.strip():
+            k = k.strip()
+
+            # v is often an int
+            if isinstance(v, str):
+                v = v.strip()
+
+            # v is not empty
+            if str(v).strip():
+                theme_dict[k] = v
 
     assert not 'NA' in theme_dict.keys(), 'should have implicitly removed themes named "NA"'
     return question, responses, theme_dict
