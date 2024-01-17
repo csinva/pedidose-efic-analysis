@@ -1,7 +1,7 @@
 import pandas as pd
 import os
 import os.path
-from os.path import join
+from os.path import join, dirname
 import numpy as np
 import imodelsx
 from tqdm import tqdm
@@ -10,8 +10,15 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import traceback
 
-DATA_DIR_INITIAL = '../data/raw/'
+# get path to current file
+REPO_DIR = dirname(dirname(os.path.abspath(__file__)))
+DATA_DIR_INITIAL = join(REPO_DIR, 'data/raw')
 DATA_DIR = join(DATA_DIR_INITIAL, '2nd Pass Analysis')
+PROCESSED_DIR = join(REPO_DIR, 'processed')
+
+RENAME_SITE_DICT = {
+    'WashingtonDC': 'Washington DC',
+}
 
 
 def load_files_dict_single_site():
@@ -68,7 +75,11 @@ def get_data_for_question_single_site(question_num: int, qs, responses_df, theme
         if pd.isna(resp):
             responses.values[i] = np.nan
         # one of select strings
-        elif resp.lower().strip(' .()') in ['not asked', 'see above', 'answer not recorded', 'did not ask', 'n/a', 'above']:
+        elif resp.lower().strip(' .()') in [
+            'not asked', 'see above', 'answer not recorded', 'did not ask', 'n/a', 'above',
+            'answer not recorded, presumed interviewee shook head no?', 'did not answer',
+            'inaudible answer', 'interview transcript ended'
+        ]:
             responses.values[i] = np.nan
         # check if resp is just whitespace or punctuation
         elif not resp.strip(' .,'):
