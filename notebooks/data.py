@@ -22,6 +22,7 @@ RENAME_SITE_DICT = {
 RENAME_CHECKPOINTS_DICT = {
     'gpt-4': 'GPT-4',
     'gpt-35-turbo': 'GPT-3.5 Turbo',
+    'meta-llama/Llama-2-7b-hf': 'LLaMA-2 7B',
 }
 
 
