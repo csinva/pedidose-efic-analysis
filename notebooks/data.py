@@ -26,20 +26,26 @@ def load_files_dict_single_site():
     files_succ = []
     files_fail = []
     annotators = [x for x in os.listdir(DATA_DIR) if not '.' in x]
-    for annotator in annotators:
+    for annotator in sorted(annotators):
         # print(annotator)
         annotator_dir = join(DATA_DIR, annotator)
         interviews = [x for x in os.listdir(
             annotator_dir) if x.endswith('.xlsx') and not 'INCOMPLETE' in x]
         # files_dict[annotator] = interviews
-        for interview in interviews:
+        for interview in sorted(interviews):
             fname = join(annotator_dir, interview)
             df = pd.read_excel(fname)
             key = interview.replace('Interview Analysis.xlsx', '').strip()
             files_dict[key] = df
+            if key == 'Charlotte':
+                # For whatever reason, charlotte had one question name empty
+                df.loc[:, 'Subcategory'] = files_dict['Atlanta']['Subcategory']
             COLS = ['Item #', 'Slide #', 'Domain', 'Subcategory']
             for i in range(4):
-                assert df.columns[i] == COLS[i]
+                assert df.columns[i] == COLS[i], f'column[:4] should be {COLS} but is {df.columns[:4]}'
+                assert pd.isna(df[df.columns[i]]).sum(
+                ) == 0, f'column {COLS[i]} has {pd.isna(df[df.columns[i]]).sum()} nans'
+
             assert df.shape[0] == 46
             # print(df.shape)
             assert df.columns[0] == 'Item #'
