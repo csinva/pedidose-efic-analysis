@@ -96,7 +96,7 @@ def get_data_for_question_single_site(question_num: int, qs, responses_df, theme
         elif resp.lower().strip(' .()') in [
             'not asked', 'see above', 'answer not recorded', 'did not ask', 'n/a', 'above',
             'answer not recorded, presumed interviewee shook head no?', 'did not answer',
-            'inaudible answer', 'interview transcript ended'
+            'inaudible answer', 'interview transcript ended', 'inaudible', "n/a: didn't ask",
         ]:
             responses.values[i] = np.nan
         # check if resp is just whitespace or punctuation

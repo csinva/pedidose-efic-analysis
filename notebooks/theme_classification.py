@@ -40,6 +40,14 @@ def get_valid_question_nums(qs, responses_df, themes_df):
         question, responses, theme_dict = data.get_data_for_question_single_site(
             question_num=question_num, qs=qs, responses_df=responses_df, themes_df=themes_df)
 
+        # remove weird hanging error
+        child_neurologist_in_response = False
+        for i in range(len(responses)):
+            if isinstance(responses.values[i], str) and 'Child neurologist' in responses.values[i]:
+                child_neurologist_in_response = True
+        if child_neurologist_in_response:
+            continue
+
         # print(theme_dict)
         # valid only if there are multiple themes
         if len(theme_dict) > 1:
@@ -70,7 +78,7 @@ def get_classifications(llm, valid_question_nums, qs, responses_df, themes_df):
                     classes_as_numbered_list=numbered_list(theme_dict.keys()),
                     response=response,
                 )
-                ans = llm(prompt)
+                ans = llm(prompt, verbose=False)
                 classifications[question_num].append(ans)
     return classifications
 
